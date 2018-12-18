@@ -3,9 +3,9 @@
             [clojure.walk]))
 
 (spec/def ::element-seq
-  (spec/cat :tag keyword?
-            :props (spec/? any?)
-            :children (spec/* ::form)))
+  (spec/cat ::tag keyword?
+            ::props (spec/? any?)
+            ::children (spec/* ::form)))
 
 (spec/def ::element-form
   (spec/and (spec/coll-of any? :kind vector? :into []
@@ -14,8 +14,8 @@
             ::element-seq))
 
 (spec/def ::form
-  (spec/or :element ::element-form
-           :map (spec/map-of any? ::form)
-           :coll (spec/coll-of ::form)
-           :other any?))
+  (spec/or ::element ::element-form
+           ::map (spec/map-of any? ::form)
+           ::coll (spec/coll-of ::form)
+           ::other any?))
 

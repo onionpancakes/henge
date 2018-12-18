@@ -6,13 +6,13 @@
 (deftest test-unform-element
   (are [x y] (let [res (spec/unform ::h/element-form x)]
                (and (= res y) (vector? res)))
-    {:tag   :foo
-     :props nil}                [:foo nil]
-    {:tag   :foo
-     :props :bar}               [:foo :bar]
-    {:tag      :foo
-     :props    :bar
-     :children [[:other :baz]]} [:foo :bar :baz]))
+    {::h/tag   :foo
+     ::h/props nil}                [:foo nil]
+    {::h/tag   :foo
+     ::h/props :bar}               [:foo :bar]
+    {::h/tag      :foo
+     ::h/props    :bar
+     ::h/children [[::h/other :baz]]} [:foo :bar :baz]))
 
 (deftest test-conform-unform-identical
   (are [x] (->> (spec/conform ::h/form x)
