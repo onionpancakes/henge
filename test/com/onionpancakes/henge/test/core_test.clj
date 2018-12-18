@@ -15,7 +15,20 @@
    #{:foo}         [::h/coll #{[::h/other :foo]}]
    {:foo [:foo]}   [::h/map
                     {:foo '[::h/element #::h{:tag :foo}]}]
-   :foo            [::h/other :foo]})
+   :foo            [::h/other :foo]
+   [:foo nil
+    [:bar]]        [::h/element
+                    #::h{:tag      :foo
+                         :props    nil
+                         :children [[::h/element
+                                     #::h{:tag :bar}]]}]
+   [:foo nil
+    '([:bar])]     [::h/element
+                    #::h{:tag      :foo
+                         :props    nil
+                         :children [[::h/coll
+                                     '([::h/element
+                                        #::h{:tag :bar}])]]}]})
 
 (deftest test-conform
   (doseq [[form conformed] form->conformed]
