@@ -1,6 +1,6 @@
 (ns com.onionpancakes.henge.test.core-prop-test
   (:require [com.onionpancakes.henge.core :as h]
-            [clojure.test :refer [deftest is are]]
+            [clojure.test :refer [deftest is]]
             [clojure.spec.alpha :as spec]
             [clojure.spec.test.alpha :as stest]))
 
