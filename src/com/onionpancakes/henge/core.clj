@@ -13,6 +13,7 @@
   (spec/and (spec/coll-of any? :kind vector? :into []
                           :min-count 1 :gen #(spec/gen vector?))
             (complement map-entry?)
+            (comp not ::skip meta)
             ::element-seq))
 
 (def ^:dynamic *create-element-fn*
