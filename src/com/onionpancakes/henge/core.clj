@@ -37,19 +37,14 @@
            ::coll (spec/coll-of ::form)
            ::other any?))
 
-(defn component-tag?
-  [k]
+(defn- component-tag? [k]
   (Character/isUpperCase (first (name k))))
 
-(defn keyword->symbol
-  [k]
+(defn- keyword->symbol [k]
   (symbol (namespace k) (name k)))
 
-(defn tag->type
-  [k]
-  (if (component-tag? k)
-    (keyword->symbol k)
-    (name k)))
+(defn- tag->type [k]
+  (if (component-tag? k) (keyword->symbol k) (name k)))
 
 (defmulti process-node first)
 
@@ -62,15 +57,11 @@
   [node]
   node)
 
-(defn node?
-  [x]
+(defn- node? [x]
   (and (vector? x) (= (count x) 2)))
 
-(defn process
-  [x]
-  (if (node? x)
-    (process-node x)
-    x))
+(defn- process [x]
+  (if (node? x) (process-node x) x))
 
 (defn compile*
   [form]
