@@ -4,37 +4,31 @@
             [clojure.spec.gen.alpha :as gen]
             [clojure.walk]))
 
-(spec/def ::element-seq
-  (spec/cat ::tag keyword?
-            ::props (spec/? any?)
-            ::children (spec/* ::form)))
-
 (spec/def ::element-form
-  (spec/and (spec/coll-of any? :kind vector? :into []
-                          :min-count 1 :gen #(spec/gen vector?))
-            (complement map-entry?)
-            (comp not ::skip meta)
-            ::element-seq))
+  (spec/and
+   (spec/coll-of any? :kind vector? :into []
+                 :min-count 1 :gen #(spec/gen vector?))
+   (complement map-entry?)
+   (comp not ::skip meta)
+   (spec/cat ::tag keyword?
+             ::props (spec/? any?)
+             ::children (spec/* ::form))))
 
 (def ^:dynamic *create-element-fn*
   `js/React.createElement)
 
-(spec/def ::create-element-seq
-  (spec/cat ::fn #{*create-element-fn*}
-            ::type any?
-            ::props (spec/? any?)
-            ::children (spec/* ::form)))
-
-(defn create-element-form-gen []
+(defn- create-element-form-gen []
   (->> (spec/gen list?)
        (gen/fmap (partial cons *create-element-fn*))))
 
 (spec/def ::create-element-form
   (spec/and
-   (spec/coll-of any? :kind seq?
-                 :min-count 2
+   (spec/coll-of any? :kind seq? :min-count 2
                  :gen create-element-form-gen)
-   ::create-element-seq))
+   (spec/cat ::fn #{*create-element-fn*}
+             ::type any?
+             ::props (spec/? any?)
+             ::children (spec/* ::form))))
 
 (spec/def ::form
   (spec/or ::element ::element-form
