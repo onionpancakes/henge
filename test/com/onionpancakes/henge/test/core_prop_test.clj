@@ -28,6 +28,10 @@
     (catch Exception e
       (throw (ex-info "Error in round-trip!" {:form form} e)))))
 
+;; TODO: guard against ##NAN spec bug
+;; Produces multiple map entries when should only be one
+;; e.g. (spec/conform (spec/map-of any? (spec/or :int int?)) {##NaN 0})
+
 (spec/fdef property-round-trip
   :args (spec/cat :form any?)
   :fn (fn [{{form :form} :args ret :ret}]
