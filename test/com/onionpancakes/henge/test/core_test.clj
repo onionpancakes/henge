@@ -60,4 +60,3 @@
     '(let [c [:foo]] c)  `(~'let [~'c (~cfn "foo")] ~'c)
     [:foo {:bar [:baz]}] `(~cfn "foo" {:bar [:baz]})
     {[:foo] [:bar]}      {[:foo] `(~cfn "bar")}))
-

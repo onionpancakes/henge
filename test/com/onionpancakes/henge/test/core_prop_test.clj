@@ -39,4 +39,3 @@
 
 (deftest test-property-round-trip
   (is (check `property-round-trip)))
-
