@@ -4,6 +4,9 @@
             [clojure.spec.gen.alpha :as gen]
             [clojure.walk]))
 
+(def ^:dynamic *create-element-fn*
+  `js/React.createElement)
+
 (spec/def ::element-form
   (spec/and
    (spec/coll-of any? :kind vector? :into []
@@ -13,9 +16,6 @@
    (spec/cat ::tag keyword?
              ::props (spec/? any?)
              ::children (spec/* ::form))))
-
-(def ^:dynamic *create-element-fn*
-  `js/React.createElement)
 
 (defn- create-element-form-gen []
   (->> (spec/gen list?)
@@ -54,11 +54,8 @@
   [node]
   node)
 
-(defn- node? [x]
-  (and (vector? x) (= (count x) 2)))
-
 (defn- process [x]
-  (if (node? x) (process-node x) x))
+  (if (map-entry? x) (process-node x) x))
 
 (defn compile*
   [form]
