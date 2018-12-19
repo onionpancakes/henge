@@ -40,11 +40,8 @@
 (defn- component-tag? [k]
   (Character/isUpperCase (first (name k))))
 
-(defn- keyword->symbol [k]
-  (symbol (namespace k) (name k)))
-
 (defn- tag->type [k]
-  (if (component-tag? k) (keyword->symbol k) (name k)))
+  (if (component-tag? k) (symbol k) (name k)))
 
 (defmulti process-node first)
 
