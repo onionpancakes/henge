@@ -18,7 +18,7 @@
              ::children (spec/* ::form))))
 
 (defn- create-element-form-gen []
-  (->> (spec/gen list?)
+  (->> (spec/gen seq?)
        (gen/fmap (partial cons *create-element-fn*))))
 
 (spec/def ::create-element-form
