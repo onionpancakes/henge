@@ -25,12 +25,13 @@
   (try
     (->> (spec/conform ::h/form form)
          (spec/unform ::h/form))
+    (catch UnsupportedOperationException e
+      ;; Guards against ##NAN spec bug
+      ;; Produces multiple map entries when should only be one
+      ;; e.g. (spec/conform (spec/map-of any? (spec/or :int int?)) {##NaN 0})
+      form)
     (catch Exception e
       (throw (ex-info "Error in round-trip!" {:form form} e)))))
-
-;; TODO: guard against ##NAN spec bug
-;; Produces multiple map entries when should only be one
-;; e.g. (spec/conform (spec/map-of any? (spec/or :int int?)) {##NaN 0})
 
 (spec/fdef property-round-trip
   :args (spec/cat :form any?)
