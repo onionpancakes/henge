@@ -37,18 +37,28 @@
            ::coll (spec/coll-of ::form)
            ::other any?))
 
-(defn- component-tag? [k]
+(defn component-tag? [k]
   (Character/isUpperCase (first (name k))))
 
-(defn- tag->type [k]
+(defn tag->type [k]
   (if (component-tag? k) (symbol k) (name k)))
+
+(def ^:dynamic transform-tag tag->type)
+
+(def ^:dynamic transform-props identity)
+
+(defn ^:dynamic transform-element
+  [m]
+  (cond-> m
+    true (assoc ::fn *create-element-fn*)
+    true (assoc ::type (transform-tag (::tag m)))
+    (contains? m ::props) (update ::props transform-props)))
 
 (defmulti process-node first)
 
 (defmethod process-node ::element
   [[_ m]]
-  [::create-element (merge m {::fn   *create-element-fn*
-                              ::type (tag->type (::tag m))})])
+  [::create-element (transform-element m)])
 
 (defmethod process-node :default
   [node]
