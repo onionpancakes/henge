@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [compile])
   (:require [com.onionpancakes.henge.core :as h]
             [clojure.spec.alpha :as spec]
-            [cljs.tagged-literals :refer [read-js]]
             [clojure.string])
   (:import [cljs.tagged_literals JSValue]))
 
@@ -38,6 +37,49 @@
       class (assoc :className (->> (map conformed-token-val class)
                                    (clojure.string/join " "))))))
 
+;; Maps
+
+(defprotocol Classes
+  (transform-classes* [this]))
+
+(extend-protocol Classes
+  clojure.lang.PersistentArrayMap
+  (transform-classes* [this]
+    `(-> (eduction (filter val)
+                   (map (comp name key))
+                   ~this)
+         (into-array)
+         (.join " ")))
+  clojure.lang.PersistentHashMap
+  (transform-classes* [this]
+    `(-> (eduction (filter val)
+                   (map (comp name key))
+                   ~this)
+         (into-array)
+         (.join " ")))
+  Object
+  (transform-classes* [this]
+    `(-> (eduction (map name) ~this)
+         (into-array)
+         (.join " ")))
+  nil
+  (transform-classes* [this] nil))
+
+(defmulti props-map-entry key)
+
+(defmethod props-map-entry ::classes
+  [[_ v]]
+  [:className (transform-classes* v)])
+
+(defmethod props-map-entry :default
+  [entry]
+  entry)
+
+(defn map->props-map [m]
+  (into {} (map props-map-entry) m))
+
+;;
+
 (defprotocol Props
   (transform-props* [this]))
 
@@ -48,8 +90,18 @@
          (re-seq re-token)
          (tokens->props-map)
          (JSValue.)))
+  clojure.lang.PersistentArrayMap
+  (transform-props* [this]
+    (->> (map->props-map this)
+         (JSValue.)))
+  clojure.lang.PersistentHashMap
+  (transform-props* [this]
+    (->> (map->props-map this)
+         (JSValue.)))
   Object
-  (transform-props* [this] this))
+  (transform-props* [this] this)
+  nil
+  (transform-props* [this] nil))
 
 (defn compile*
   [form]
