@@ -6,6 +6,8 @@
             [clojure.string])
   (:import [cljs.tagged_literals JSValue]))
 
+;; Keyword
+
 (def re-token
   #"[#.]|[^#.]+")
 
@@ -33,7 +35,8 @@
                                        (group-by key))]
     (cond-> nil
       id    (assoc :id (conformed-token-val (first id)))
-      class (assoc ::classes (mapv conformed-token-val class)))))
+      class (assoc :className (->> (map conformed-token-val class)
+                                   (clojure.string/join " "))))))
 
 (defprotocol Props
   (transform-props* [this]))
@@ -41,8 +44,10 @@
 (extend-protocol Props
   clojure.lang.Keyword
   (transform-props* [this]
-    (read-js {:id "foo"
-              :className "bar"}))
+    (->> (name this)
+         (re-seq re-token)
+         (tokens->props-map)
+         (JSValue.)))
   Object
   (transform-props* [this] this))
 
