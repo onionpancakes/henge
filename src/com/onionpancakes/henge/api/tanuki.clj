@@ -5,7 +5,7 @@
             [clojure.string])
   (:import [cljs.tagged_literals JSValue]))
 
-;; Keyword
+;; Keyword props
 
 (def re-token
   #"[#.]|[^#.]+")
@@ -25,19 +25,36 @@
                     ::class ::class
                     ::other any?)))
 
-(defn- conformed-token-val [[_ v]]
+(defn- tokens-val [[_ v]]
   (apply str (::tokens v)))
 
 (defn tokens->props-map
   [tokens]
-  (let [{::keys [id class other]} (->> (spec/conform ::tokens tokens)
-                                       (group-by key))]
+  (let [ct (spec/conform ::tokens tokens)
+        {::keys [id class other]} (group-by key ct)]
     (cond-> nil
-      id    (assoc :id (conformed-token-val (first id)))
-      class (assoc :className (->> (map conformed-token-val class)
+      id    (assoc :id (tokens-val (first id)))
+      class (assoc :className (->> (map tokens-val class)
                                    (clojure.string/join " "))))))
 
-;; Maps
+(defn keyword->props-map [k]
+  (->> (name k)
+       (re-seq re-token)
+       (tokens->props-map)))
+
+;; Map props
+
+(defn map-classes-form [m]
+  `(-> (eduction (filter val)
+                 (map (comp name key))
+                 ~m)
+       (into-array)
+       (.join " ")))
+
+(defn default-classes-form [obj]
+  `(-> (eduction (map name) ~obj)
+       (into-array)
+       (.join " ")))
 
 (defprotocol Classes
   (transform-classes* [this]))
@@ -45,23 +62,13 @@
 (extend-protocol Classes
   clojure.lang.PersistentArrayMap
   (transform-classes* [this]
-    `(-> (eduction (filter val)
-                   (map (comp name key))
-                   ~this)
-         (into-array)
-         (.join " ")))
+    (map-classes-form this))
   clojure.lang.PersistentHashMap
   (transform-classes* [this]
-    `(-> (eduction (filter val)
-                   (map (comp name key))
-                   ~this)
-         (into-array)
-         (.join " ")))
+    (map-classes-form this))
   Object
   (transform-classes* [this]
-    `(-> (eduction (map name) ~this)
-         (into-array)
-         (.join " ")))
+    (default-classes-form this))
   nil
   (transform-classes* [this] nil))
 
@@ -78,7 +85,7 @@
 (defn map->props-map [m]
   (into {} (map props-map-entry) m))
 
-;;
+;; Compile API
 
 (defprotocol Props
   (transform-props* [this]))
@@ -86,9 +93,7 @@
 (extend-protocol Props
   clojure.lang.Keyword
   (transform-props* [this]
-    (->> (name this)
-         (re-seq re-token)
-         (tokens->props-map)
+    (->> (keyword->props-map this)
          (JSValue.)))
   clojure.lang.PersistentArrayMap
   (transform-props* [this]
