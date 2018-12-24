@@ -64,12 +64,8 @@
   [node]
   node)
 
-(def ^:private nodes
-  #{::element ::create-element ::map ::coll ::other})
-
 (defn- process [x]
-  (if (and (map-entry? x) (nodes (first x)))
-    (process-node x) x))
+  (if (map-entry? x) (process-node x) x))
 
 (defn compile*
   [form]
