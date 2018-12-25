@@ -1,0 +1,17 @@
+{:deps  {org.clojure/clojure       {:mvn/version "1.10.0"}
+         org.clojure/clojurescript {:mvn/version "1.10.439"}
+         com.onionpancakes/henge   {:local/root "../../."}}
+ :paths ["src"]
+
+ :aliases
+ {:build
+  {:main-opts ["-m" "cljs.main"
+               "-c" "com.onionpancakes.henge.example.todo"]}
+  :serve
+  {:main-opts ["-m" "cljs.main"
+               "-c" "com.onionpancakes.henge.example.todo"
+               "--serve"]}
+  :watch
+  {:main-opts ["-m" "cljs.main"
+               "-w" "src"
+               "-c" "com.onionpancakes.henge.example.todo"]}}}
