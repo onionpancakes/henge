@@ -73,7 +73,7 @@ If the element has children, declaring the props is mandatory since the second i
 ```clojure
 (h/compile [:div nil "foo"]) ; OK
 
-(h/compile [:div "foo"])     ; Bad, string are not props!
+(h/compile [:div "foo"])     ; Bad, strings are not props!
 ```
 
 ## Children
@@ -167,7 +167,7 @@ Use `::t/classes` to specify the element's classes with a collection.
 ;; Use a vector with keywords.
 (t/compile [:div {::t/classes [:foo :bar]}])
 
-;; Or a map with values as condition expressions.
+;; Or a map with values, each as a condition expression.
 (t/compile [:div {::t/classes {:foo true
                                :bar (= 0 1)}}])
 ```
