@@ -6,7 +6,7 @@ ClojureScript library for transforming vectors into `React.createElement` calls.
 
 Add Henge's git coordinate to your `deps.edn`.
 
-```
+```clojure
 {:deps {com.onionpancakes/henge {:git/url <repo url>
                                  :sha     <commit sha>}}}
 ```
@@ -20,13 +20,13 @@ Additional requirements
 
 Require Henge's macros in your ClojureScript file.
 
-```
+```clojure
 (require-macros '[com.onionpancakes.henge.core :as h])
 ```
 
 The `compile` macro will transform all vectors beginning with keywords into `React.createElement` calls.
 
-```
+```clojure
 (h/compile [:h1 nil "Hello World!"])
 
 ;; expands into this
@@ -40,7 +40,7 @@ The first item in the vector (the tag) must be a keyword. Henge follows JSX's se
 
 Lowercase tags are treated as DOM elements and Henge will convert them into strings. 
 
-```
+```clojure
 (h/compile [:div])
 
 ;; Since :div lower case, the tag becomes a string.
@@ -50,7 +50,7 @@ Lowercase tags are treated as DOM elements and Henge will convert them into stri
 
 Capitalized tags are treated as components and Henge will convert them into namespace preserving into symbols.
 
-```
+```clojure
 (h/compile [:ns/Widget])
 
 ;; Since :ns/Widget is capitalized, the tag becomes a symbol.
@@ -62,15 +62,15 @@ Capitalized tags are treated as components and Henge will convert them into name
 
 The second item in the vector (the props) must be a Javascript object or nil. By default, it is passed untransformed to `React.createElement`. Keep in mind that React only understands Javascript objects for props.
 
-```
-(h/compile [:div #js {:id "foo}]) ; OK
+```clojure
+(h/compile [:div #js {:id "foo"}]) ; OK
 
 (h/compile [:div {:id "foo"}])    ; Bad, map is not js object!
 ```
 
 If the element has children, declaring the props is mandatory since the second item in the vector always treated as props.
 
-```
+```clojure
 (h/compile [:div nil "foo"]) ; OK
 
 (h/compile [:div "foo"])     ; Bad, string are not props!
@@ -82,7 +82,7 @@ The remaining items in the vector will be treated as the element's children.
 
 Henge will compile nested keyword vectors into React elements.
 
-```
+```clojure
 (h/compile [:div nil [:p nil "foo"]])
 
 ;; becomes
@@ -93,7 +93,7 @@ Henge will compile nested keyword vectors into React elements.
 
 All other forms will be ignored.
 
-```
+```clojure
 (h/compile [:ol nil
              (for [i (range 5)]
                [:li nil i])])
@@ -109,7 +109,7 @@ All other forms will be ignored.
 
 Henge is designed to be extendable. Serveral key transformation functions and values are dynamic and bindable. Write your own macro and rebind these vars.
 
-```
+```clojure
 (defmacro mycompile [form]
   (binding [h/*create-element-fn* 'my-func]
     (h/compile* form)))
@@ -127,7 +127,7 @@ Read the source to find out whats is dynamically bindable.
 
 Henge comes with an extended api called *tanuki* which makes handling React props easier.
 
-```
+```clojure
 (require-macros '[com.onionpancakes.henge.api.tanuki :as t])
 ```
 
@@ -135,7 +135,7 @@ Henge comes with an extended api called *tanuki* which makes handling React prop
 
 Use keywords as css selector style props. Keywords are parsed into tokens. Tokens beginning with `#` are treated as ids. Tokens beginning with `.` are treated as classes.
 
-```
+```clojure
 (t/compile [:div :#app.foo.bar])
 
 ;; becomes
@@ -148,13 +148,13 @@ Use keywords as css selector style props. Keywords are parsed into tokens. Token
 
 Use ClojureScript maps as props. Certain namespaced keys will process their values differently. Global keys are treated normally.
 
-```
+```clojure
 (t/compile [:div {:id "app"}]) ; OK
 ```
 
 Note that for global keys, sub-maps are not handled differently.
 
-```
+```clojure
 (t/compile [:div {:style #js {:color "blue"}}]) ; OK
 
 ;; Style needs a js object, not a map.
@@ -163,7 +163,7 @@ Note that for global keys, sub-maps are not handled differently.
 
 Use `::t/classes` to specify the element's classes with a collection.
 
-```
+```clojure
 ;; Use a vector with keywords.
 (t/compile [:div {::t/classes [:foo :bar]}])
 
