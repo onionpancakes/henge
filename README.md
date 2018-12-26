@@ -133,7 +133,7 @@ Henge comes with an extended api called *tanuki* which makes handling React prop
 
 ## Keywords as props
 
-Use keywords as css selector style props. Keywords are parsed into tokens. Tokens beginning with `#` are treated as ids. Tokens beginning with `.` are treated as classes.
+Use keywords as css selector style props. Keywords are parsed into tokens. Tokens beginning with `#` are treated as ids. Tokens beginning with `.` are treated as classes. Tokens are processed into id and classes at **compile** time.
 
 ```clojure
 (t/compile [:div :#app.foo.bar])
@@ -161,7 +161,7 @@ Note that for global keys, sub-maps are not handled differently.
 (t/compile [:div {:style {:color "blue"}}])     ; Bad
 ```
 
-Use `::t/classes` to specify the element's classes with a collection.
+Use `::t/classes` to specify the element's classes with a collection. Classes will be processed and joined at **runtime**.
 
 ```clojure
 ;; Use a vector with keywords.
@@ -170,6 +170,10 @@ Use `::t/classes` to specify the element's classes with a collection.
 ;; Or a map with values, each as a condition expression.
 (t/compile [:div {::t/classes {:foo true
                                :bar (= 0 1)}}])
+
+;; Or an arbitrary expression, as long as it returns a
+;; seq of keywords or strings.
+(t/compile [:div {::t/classes (vector :foo :bar)}])
 ```
 
 Currently, only `::t/classes` has special processing. 
