@@ -6,12 +6,12 @@
  :aliases
  {:build
   {:main-opts ["-m" "cljs.main"
-               "-c" "com.onionpancakes.henge.example.todo"]}
+               "-c" "com.onionpancakes.henge.example.todo.app"]}
   :serve
   {:main-opts ["-m" "cljs.main"
-               "-c" "com.onionpancakes.henge.example.todo"
+               "-c" "com.onionpancakes.henge.example.todo.app"
                "--serve"]}
   :watch
   {:main-opts ["-m" "cljs.main"
                "-w" "src"
-               "-c" "com.onionpancakes.henge.example.todo"]}}}
+               "-c" "com.onionpancakes.henge.example.todo.app"]}}}

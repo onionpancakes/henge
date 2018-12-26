@@ -1,4 +1,4 @@
-(ns com.onionpancakes.henge.example.todo
+(ns com.onionpancakes.henge.example.todo.components
   (:require-macros [com.onionpancakes.henge.api.tanuki :as t]))
 
 (defn TodoInput [props]
@@ -9,13 +9,14 @@
     (t/compile
      [:div :.TodoInput
       [:div nil
-       [:input {:value    st
-                :ref      input-ref
-                :onChange #(st! (.. % -target -value))
-                :onKeyPress #(when (= (.-key %) "Enter")
+       [:input {:value      st
+                :ref        input-ref
+                :onChange   #(st! (.. % -target -value))
+                :onKeyPress #(when (and (= (.-key %) "Enter")
+                                        (not= st ""))
                                (handleNewTask st)
                                (st! ""))}]
-       [:button {:onClick #(when (not (= st ""))
+       [:button {:onClick #(when (not= st "")
                              (handleNewTask st)
                              (st! "")
                              (.. input-ref -current focus))}
@@ -57,6 +58,3 @@
           "What needs to be done?"])]
       [:TodoInput {:handleNewTask handleNewTask
                    :handleClear   handleClear}]])))
-
-(js/ReactDOM.render (t/compile [:TodoApp])
-                    (js/document.getElementById "app"))
