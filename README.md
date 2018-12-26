@@ -29,7 +29,7 @@ The `compile` macro will transform all vectors beginning with keywords into `Rea
 ```clojure
 (h/compile [:h1 nil "Hello World!"])
 
-;; expands into this
+;; becomes
 
 (js/React.createElement "h1" nil "Hello World!")
 ```
@@ -43,7 +43,7 @@ Lowercase tags are treated as DOM elements and Henge will convert them into stri
 ```clojure
 (h/compile [:div])
 
-;; Since :div lower case, the tag becomes a string.
+;; becomes
 
 (js/React.createElement "div")
 ```
@@ -53,7 +53,7 @@ Capitalized tags are treated as components and Henge will convert them into name
 ```clojure
 (h/compile [:ns/Widget])
 
-;; Since :ns/Widget is capitalized, the tag becomes a symbol.
+;; becomes
 
 (js/React.createElement ns/Widget)
 ```
@@ -65,7 +65,7 @@ The second item in the vector (the props) must be a Javascript object or nil. By
 ```clojure
 (h/compile [:div #js {:id "foo"}]) ; OK
 
-(h/compile [:div {:id "foo"}])    ; Bad, map is not js object!
+(h/compile [:div {:id "foo"}])     ; Bad, map is not js object!
 ```
 
 If the element has children, declaring the props is mandatory since the second item in the vector always treated as props.
