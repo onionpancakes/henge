@@ -1,0 +1,8 @@
+{
+    "presets": ["env", "react"],
+    /*
+        Babel makes top level `this` undefined.
+        https://github.com/facebook/jest/issues/3970#issuecomment-328703877
+    */
+    "ignore": ["./testjs/components.js"]
+}
