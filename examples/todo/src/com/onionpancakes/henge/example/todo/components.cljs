@@ -2,25 +2,26 @@
   (:require-macros [com.onionpancakes.henge.api.tanuki :as t]))
 
 (defn TodoInput [^js/TodoInput props]
-  (let [[st st!]      (js/React.useState "")
-        handleNewTask (.-handleNewTask props)
-        handleClear   (.-handleClear props)
-        input-ref     (js/React.createRef)]
+  (let [[st st!]                      (js/React.useState "")
+        handleNewTask                 (.-handleNewTask props)
+        handleClear                   (.-handleClear props)
+        ^js/React.createRef input-ref (js/React.createRef)]
     (t/compile
      [:div :.TodoInput
       [:div nil
        [:input {:value      st
                 :ref        input-ref
-                :onChange   #(st! (.. ^js/SyntheticEvent % -target -value))
-                :onKeyPress #(when (and (= (.-key ^js/SyntheticEvent %) "Enter")
-                                        (not= st ""))
-                               (js/console.log %)
-                               (handleNewTask st)
-                               (st! ""))}]
+                :onChange   (fn [^js/SyntheticEvent e]
+                              (st! (.. e -target -value)))
+                :onKeyPress (fn [^js/SyntheticEvent e]
+                              (when (and (= (.-key e) "Enter")
+                                         (not= st ""))
+                                (handleNewTask st)
+                                (st! "")))}]
        [:button {:onClick #(when (not= st "")
                              (handleNewTask st)
                              (st! "")
-                             (.. ^js/React.createRef input-ref -current focus))}
+                             (.. input-ref -current focus))}
         "Add Task"]
        [:button {:onClick handleClear} "Clear"]]])))
 
