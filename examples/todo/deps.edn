@@ -7,6 +7,13 @@
  {:build
   {:main-opts ["-m" "cljs.main"
                "-c" "com.onionpancakes.henge.example.todo.app"]}
+
+  :build/adv
+  {:main-opts ["-m" "cljs.main"
+               "-co" "{:infer-externs,true}"
+               "-O" "advanced"
+               "-c" "com.onionpancakes.henge.example.todo.app"]}
+
   :serve
   {:main-opts ["-m" "cljs.main"
                "-c" "com.onionpancakes.henge.example.todo.app"
