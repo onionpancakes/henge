@@ -24,7 +24,7 @@ Require Henge's macros in your ClojureScript file.
 (require-macros '[com.onionpancakes.henge.core :as h])
 ```
 
-The `compile` macro will transform all vectors beginning with keywords into `React.createElement` calls.
+The `compile` macro transforms all keyword vectors, vectors beginning with keywords, into `React.createElement` calls.
 
 ```clojure
 (h/compile [:h1 nil "Hello World!"])
@@ -38,7 +38,7 @@ The `compile` macro will transform all vectors beginning with keywords into `Rea
 
 The first item in the vector (the tag) must be a keyword. Henge follows JSX's semantics[<sup>[Link]</sup>](https://reactjs.org/docs/jsx-in-depth.html#specifying-the-react-element-type) when determining the type of the element.
 
-Lowercase tags are treated as DOM elements and Henge will convert them into strings. 
+Lowercase tags are treated as DOM elements and Henge converts them into strings. 
 
 ```clojure
 (h/compile [:div])
@@ -48,7 +48,7 @@ Lowercase tags are treated as DOM elements and Henge will convert them into stri
 (js/React.createElement "div")
 ```
 
-Capitalized tags are treated as components and Henge will convert them into namespace preserving into symbols.
+Capitalized tags are treated as components and Henge converts them into namespace preserving into symbols.
 
 ```clojure
 (h/compile [:ns/Widget])
@@ -86,9 +86,9 @@ Henge does not transform prop keys. React expects **camelCase** keys. Do not use
 
 ## Children
 
-The remaining items in the vector will be treated as the element's children.
+The remaining items in the vector are treated as the element's children.
 
-Henge will compile nested keyword vectors into React elements.
+Henge recursively compiles nested keyword vectors into React elements.
 
 ```clojure
 (h/compile [:div nil [:p nil "foo"]])
@@ -99,18 +99,18 @@ Henge will compile nested keyword vectors into React elements.
   (js/React.createElement "p" nil "foo"))
 ```
 
-All other forms will be ignored.
+All other forms are left as they are.
 
 ```clojure
 (h/compile [:ol nil
              (for [i (range 5)]
-               [:li nil i])])
+               [:li #js {:key i} i])])
 
 ;; compiles into
 
 (js/React.createElement "ol" nil
   (for [i (range 5)]
-    (js/React.createElement "li" nil i))
+    (js/React.createElement "li" #js {:key i} i))
 ```
 
 # Extending
@@ -133,7 +133,9 @@ Read the source to find out whats is dynamically bindable.
 
 # Tanuki Extension
 
-Henge comes with an extended api called *tanuki* which makes handling React props easier.
+Henge comes with an extended api called *tanuki* designed to make handling React props easier.
+
+Require tanuki's `compile` macro from its namespace.
 
 ```clojure
 (require-macros '[com.onionpancakes.henge.api.tanuki :as t])
@@ -154,7 +156,7 @@ Use keywords as css selector style props. Keywords are parsed into tokens. Token
 
 ## Maps as props
 
-Use ClojureScript maps as props. Certain namespaced keys will process their values differently. Global keys are treated normally.
+Tanuki treats Clojure maps as a special extension of js object props. Namespaced keys are used as entrypoints for special behavior. Global, non-namespaced keys are treated as ordinary props with their values passed through untouched.
 
 ```clojure
 (t/compile [:div {:id "app"}]) ; OK
@@ -169,15 +171,22 @@ Note that for global keys, sub-maps are not handled differently. Send js objects
 (t/compile [:div {:style {:color "blue"}}])     ; Bad
 ```
 
-Use `::t/classes` to specify the element's classes with a collection. Classes will be processed and joined at **runtime**.
+### `::t/classes` - Specify classes with a collection
+
+Use `::t/classes` to specify the element's classes with a collection. The value of `::t/classes` can be one of the following:
+
+* A map of keywords to condition expressions.
+* Or any arbitrary expression which evaluates to a seq of keywords or strings.
+
+The value of `::t/classes` is compiled into an expression which will process and join a `className` property string at **runtime**.
 
 ```clojure
-;; Use a vector with keywords.
-(t/compile [:div {::t/classes [:foo :bar]}])
-
-;; Or a map with values, each as a condition expression.
+;; Use a map with values, each a condition expression.
 (t/compile [:div {::t/classes {:foo true
                                :bar (= 0 1)}}])
+
+;; Or use a vector with keywords.
+(t/compile [:div {::t/classes [:foo :bar]}])
 
 ;; Or an arbitrary expression, as long as it returns a
 ;; seq of keywords or strings.
