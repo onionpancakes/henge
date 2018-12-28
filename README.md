@@ -29,7 +29,7 @@ The `compile` macro will transform all vectors beginning with keywords into `Rea
 ```clojure
 (h/compile [:h1 nil "Hello World!"])
 
-;; becomes
+;; compiles into
 
 (js/React.createElement "h1" nil "Hello World!")
 ```
@@ -43,7 +43,7 @@ Lowercase tags are treated as DOM elements and Henge will convert them into stri
 ```clojure
 (h/compile [:div])
 
-;; becomes
+;; compiles into
 
 (js/React.createElement "div")
 ```
@@ -53,7 +53,7 @@ Capitalized tags are treated as components and Henge will convert them into name
 ```clojure
 (h/compile [:ns/Widget])
 
-;; becomes
+;; compiles into
 
 (js/React.createElement ns/Widget)
 ```
@@ -76,6 +76,14 @@ If the element has children, declaring the props is mandatory since the second i
 (h/compile [:div "foo"])     ; Bad, strings are not props!
 ```
 
+Henge does not transform prop keys. React expects **camelCase** keys. Do not use hypen-separated keys.
+
+```clojure
+(h/compile [:button #js {:onClick #(handle %}])   ; OK
+
+(h/compile [:button #js {:on-click #(handle %)}]) ; Bad
+```
+
 ## Children
 
 The remaining items in the vector will be treated as the element's children.
@@ -85,7 +93,7 @@ Henge will compile nested keyword vectors into React elements.
 ```clojure
 (h/compile [:div nil [:p nil "foo"]])
 
-;; becomes
+;; compiles into
 
 (js/React.createElement "div" nil
   (js/React.createElement "p" nil "foo"))
@@ -98,7 +106,7 @@ All other forms will be ignored.
              (for [i (range 5)]
                [:li nil i])])
 
-;; becomes
+;; compiles into
 
 (js/React.createElement "ol" nil
   (for [i (range 5)]
@@ -116,7 +124,7 @@ Henge is designed to be extendable. Serveral key transformation functions and va
 
 (mycompile [:div nil "foo"])
 
-;; becomes
+;; compiles into
 
 (my-func "div" nil "foo")
 ```
@@ -138,7 +146,7 @@ Use keywords as css selector style props. Keywords are parsed into tokens. Token
 ```clojure
 (t/compile [:div :#app.foo.bar])
 
-;; becomes
+;; compiles into
 
 (js/React.createElement "div" #js {:id "app"
                                    :className "foo bar"})
@@ -152,7 +160,7 @@ Use ClojureScript maps as props. Certain namespaced keys will process their valu
 (t/compile [:div {:id "app"}]) ; OK
 ```
 
-Note that for global keys, sub-maps are not handled differently.
+Note that for global keys, sub-maps are not handled differently. Send js objects to properties that expects them.
 
 ```clojure
 (t/compile [:div {:style #js {:color "blue"}}]) ; OK
@@ -176,8 +184,27 @@ Use `::t/classes` to specify the element's classes with a collection. Classes wi
 (t/compile [:div {::t/classes (vector :foo :bar)}])
 ```
 
-Currently, only `::t/classes` has special processing. 
+Currently, only `::t/classes` has special processing.
 
-## LICENSE
+# Rules of Transformation
+
+Henge recursively transforms all keywords vectors into `React.createElement` calls except for the following situations:
+
+* Keyword vectors inside props.
+* Keyword vectors as keys in maps.
+* Keyword vectors with `::h/skip` metadata set to `true`.
+
+```clojure
+(h/compile
+ [:button #js {:onClick #(->> [:click %] ; Safe! Not transformed!
+                              (handle-click))}])
+
+(h/compile
+ (let [m {[:foo :bar] "baz"}]         ; Key not transformed!
+   [:div nil
+     (get m ^::h/skip [:foo :bar])])) ; Arg not transformed!
+```
+
+# LICENSE
 
 MIT
