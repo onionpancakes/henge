@@ -171,12 +171,12 @@ Note that for global keys, sub-maps are not handled differently. Send js objects
 (t/compile [:div {:style {:color "blue"}}])     ; Bad
 ```
 
-### `::t/classes` - Specify classes with a collection
+### `::t/classes` - Specify `className` with a collection
 
 Use `::t/classes` to specify the element's classes with a collection. The value of `::t/classes` can be one of the following:
 
-* A map of keywords to condition expressions.
-* Or any arbitrary expression which evaluates to a seq of keywords or strings.
+* A map of class keywords/strings to condition expressions.
+* Or an arbitrary expression which evaluates to a seq of class keywords/strings.
 
 The value of `::t/classes` is compiled into an expression which will process and join a `className` property string at **runtime**.
 
