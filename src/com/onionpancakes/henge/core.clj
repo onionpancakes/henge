@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [compile])
   (:require [clojure.spec.alpha :as spec]
             [clojure.spec.gen.alpha :as gen]
-            [clojure.walk]))
+            [clojure.walk]
+            [clojure.string]))
 
 (def ^:dynamic *create-element-fn*
   `js/React.createElement)
@@ -38,7 +39,9 @@
            ::other any?))
 
 (defn component-tag? [k]
-  (Character/isUpperCase (first (name k))))
+  (let [s (name k)]
+    (or (Character/isUpperCase (first s))
+        (clojure.string/includes? s "."))))
 
 (defn tag->type [k]
   (if (component-tag? k) (symbol k) (name k)))

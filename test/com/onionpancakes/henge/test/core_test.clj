@@ -52,7 +52,9 @@
     [:foo]               `(~cfn "foo")
     [:a/foo]             `(~cfn "foo")
     [:Foo]               `(~cfn ~'Foo)
+    [:foo.bar]           `(~cfn ~'foo.bar)
     [:a/Foo]             `(~cfn ~'a/Foo)
+    [:a/foo.bar]         `(~cfn ~'a/foo.bar)
     [:foo nil]           `(~cfn "foo" nil)
     [:foo nil :bar]      `(~cfn "foo" nil :bar)
     ^::h/skip [:foo]     [:foo]
