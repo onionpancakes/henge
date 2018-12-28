@@ -1,0 +1,6 @@
+{:main          com.onionpancakes.henge.testjs.components
+ :output-to     "testjs/components.js"
+ :optimizations :advanced
+ :infer-externs true
+ :target        :nodejs
+ :hashbang      false}

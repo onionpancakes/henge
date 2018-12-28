@@ -18,9 +18,7 @@
    :main-opts   ["-m" "cognitect.test-runner"]}
   
   :build-testjs
-  {:extra-paths ["testjs/cljs"]
+  {:extra-paths ["testjs/__cljs__"]
    :main-opts   ["-m" "cljs.main"
-                 "-co" "{:target,:nodejs,:hashbang,false}"
-                 "-O" "advanced"
-                 "-o" "testjs/components.js"
-                 "-c" "com.onionpancakes.henge.testjs.components"]}}}
+                 "-co" "testjs/__cljs__/cljsc_opts.edn"
+                 "-c"]}}}

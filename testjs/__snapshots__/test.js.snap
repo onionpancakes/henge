@@ -1,9 +1,89 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fails 1`] = `
-<div
-  className="foo"
->
+exports[`Widget 1`] = `
+<div>
   foo
+</div>
+`;
+
+exports[`WidgetFor 1`] = `
+<div>
+  <p>
+    0
+  </p>
+  <p>
+    1
+  </p>
+  <p>
+    2
+  </p>
+</div>
+`;
+
+exports[`WidgetFragment 1`] = `
+<div>
+  <div>
+    foo
+  </div>
+  <div>
+    bar
+  </div>
+</div>
+`;
+
+exports[`WidgetJSProps 1`] = `
+<div
+  className="bar baz"
+  id="foo"
+>
+  buz
+</div>
+`;
+
+exports[`WidgetKeyword 1`] = `
+<div
+  className="bar baz"
+  id="foo"
+>
+  buz
+</div>
+`;
+
+exports[`WidgetMapProps 1`] = `
+<div
+  className="bar baz"
+  id="foo"
+>
+  buz
+</div>
+`;
+
+exports[`WidgetMapPropsMapClasses 1`] = `
+<div
+  className="foo bar"
+/>
+`;
+
+exports[`WidgetNested 1`] = `
+<div>
+  <div>
+    foo
+  </div>
+</div>
+`;
+
+exports[`WidgetOther 1`] = `
+<div>
+  <div>
+    other
+  </div>
+</div>
+`;
+
+exports[`WidgetSkip 1`] = `
+<div>
+  <p>
+    Rendered
+  </p>
 </div>
 `;
