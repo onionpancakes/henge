@@ -220,9 +220,10 @@ Henge recursively transforms all keywords vectors into `React.createElement` cal
                               (handle-click))}])
 
 (h/compile
- (let [m {[:foo :bar] "baz"}]         ; Key not transformed!
+ (let [m {[:foo :bar]                 ; Map key not transformed!
+          [:p nil "foobar"]}]         ; Map value is tranformed!
    [:div nil
-     (get m ^::h/skip [:foo :bar])])) ; Arg not transformed!
+     (get m ^::h/skip [:foo :bar])])) ; The argument not transformed!
 ```
 
 # LICENSE
