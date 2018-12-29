@@ -2,6 +2,17 @@
 
 ClojureScript library for transforming vectors into `React.createElement` calls.
 
+Henge is ClojureScript's version of JSX. It follows a few guiding principles which differentiates it from other vector templating libraries.
+
+* Aggressively transform vectors into `React.createElement` calls at compile time.
+* No runtime vector interpretation.
+* Support the templating of `React.createElement` as transparently as possible with JSX semantics.
+  * No (pointless) mapping between camelCase and hypen-case props keys. Use camelCase just like normal React.
+  * Support user defined components with a consistent syntax.
+  * Support react features (e.g. `React.Context`, `React.Fragment`, etc...) with as little library maintenance as possible.
+* Extendable core api with good defaults.
+* Explore the bleeding edge of Clojure.
+
 ## Install
 
 Add Henge's git coordinate to your `deps.edn`.
@@ -11,10 +22,10 @@ Add Henge's git coordinate to your `deps.edn`.
                                  :sha     <commit sha>}}}
 ```
 
-Additional requirements
+Additional requirements:
 
-* Henge requires Clojure 1.10.0 or later.
-* Henge assumes `React` is in scope.
+* Clojure 1.10.0 or later.
+* `React` is in scope.
 
 # Usage
 
