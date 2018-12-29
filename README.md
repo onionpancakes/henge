@@ -69,7 +69,7 @@ Lowercase tags are treated as DOM elements and Henge converts them into strings.
 (js/React.createElement "div")
 ```
 
-Capitalized tags are treated as components and Henge converts them into namespace preserving into symbols.
+Capitalized tags are treated as components. Henge converts them into symbols and preserves its namespace.
 
 ```clojure
 (h/compile [:ns/Widget])
@@ -79,7 +79,7 @@ Capitalized tags are treated as components and Henge converts them into namespac
 (js/React.createElement ns/Widget)
 ```
 
-Access `React.Fragment` and other React features through the component functionality.
+Access `React.Fragment` and other React features through the component tag functionality.
 
 ```clojure
 (defn MyFragment [props]
