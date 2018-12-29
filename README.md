@@ -9,7 +9,7 @@ Henge is ClojureScript's version of JSX. It follows a few guiding principles whi
 * Support the templating of `React.createElement` as transparently as possible with JSX semantics.
   * No (pointless) mapping between camelCase and hypen-case props keys. Use camelCase just like normal React.
   * Support user defined components with a consistent syntax.
-  * Support react features (e.g. `React.Context`, `React.Fragment`, etc...) with as little library maintenance as possible.
+  * Support React features (e.g. `React.Fragment`, contexts, etc...) with as little library maintenance as possible.
 * Extendable core api with good defaults.
 * Explore the bleeding edge of Clojure.
 
@@ -45,6 +45,16 @@ The `compile` macro transforms all keyword vectors, vectors beginning with keywo
 (js/React.createElement "h1" nil "Hello World!")
 ```
 
+Combine `compile` with `defn` to write simple functional components.
+
+```clojure
+(defn MyComponent [props]
+  (h/compile
+   [:div nil
+    [:h1 nil "Hello World!"]
+    [:p nil "Foo bar baz"]]))
+```
+
 ## Tags
 
 The first item in the vector (the tag) must be a keyword. Henge follows JSX's semantics[<sup>[Link]</sup>](https://reactjs.org/docs/jsx-in-depth.html#specifying-the-react-element-type) when determining the type of the element.
@@ -67,6 +77,22 @@ Capitalized tags are treated as components and Henge converts them into namespac
 ;; compiles into
 
 (js/React.createElement ns/Widget)
+```
+
+Access `React.Fragment` and other React features through the component functionality.
+
+```clojure
+(defn MyFragment [props]
+  (h/compile
+   [:js/React.Fragment nil
+    [:p nil "foo"]
+    [:p nil "bar"]]))
+
+(defn Widget [props]
+  (h/compile
+   [:div nil
+    [:h1 nil "Hello World!"]
+    [:MyFragment]]))
 ```
 
 ## Props
