@@ -53,6 +53,9 @@ Combine `compile` with `defn` to write simple functional components.
    [:div nil
     [:h1 nil "Hello World!"]
     [:p nil "Foo bar baz"]]))
+
+(js/ReactDOM.render (h/compile [:MyComponent])
+                    (js/document.getElementById "app"))
 ```
 
 ## Tags
