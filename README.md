@@ -245,8 +245,8 @@ Note that for global keys, sub-maps are not handled differently. Send js objects
 
 Use `::t/classes` to specify the element's classes with a collection. The value of `::t/classes` can be one of the following:
 
-* A map of class keywords/strings to condition expressions.
-* Or an arbitrary expression which evaluates to a seq of class keywords/strings.
+* A map of class keywords/strings to condition expressions. Keys whose values evaluate to true are joined into `className`.
+* An arbitrary expression which evaluates to a seq of class keywords/strings. Values in the seq are joined into `className`.
 
 The value of `::t/classes` is compiled into an expression which will process and join a `className` property string at **runtime**.
 
