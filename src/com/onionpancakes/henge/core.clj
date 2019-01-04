@@ -68,6 +68,7 @@
   node)
 
 (defn- process [x]
+  ;; spec/or conforms values into map entries.
   (if (map-entry? x) (process-node x) x))
 
 (defn compile*
@@ -77,5 +78,7 @@
        (spec/unform ::form)))
 
 (defmacro compile
+  "Transforms a form, converting keyword vectors into
+  functions calls to create React elements."
   [form]
   (compile* form))

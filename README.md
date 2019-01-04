@@ -29,19 +29,20 @@ Additional requirements:
 
 ### Running the Tests
 
-To run Henge's clojure tests:
+To run clojure tests:
 
 ```
 $ clj -A:test:run-tests
 ```
 
-To run Henge's JavaScript tests, first build the test components into a JavaScript module:
+To run JavaScript tests, first build the test components into a JavaScript module:
 
 ```
 $ clj -A:build-testjs
 ```
 
-Then run tests from yarn:
+Then run the tests from yarn:
+
 ```
 $ yarn       # make sure to have npm deps
 $ yarn test
