@@ -27,7 +27,7 @@ Additional requirements:
 * Clojure 1.10.0 or later.
 * `React` is in scope.
 
-# Usage
+## Usage
 
 Require Henge's macros in your ClojureScript file.
 
@@ -62,7 +62,7 @@ Use `compile` where `React.createElement` would normally be needed.
                     (js/document.getElementById "app"))
 ```
 
-## Tags
+### Tags
 
 The first item in the vector (the tag) must be a keyword. Henge follows JSX's semantics[<sup>[Link]</sup>](https://reactjs.org/docs/jsx-in-depth.html#specifying-the-react-element-type) when determining the type of the element.
 
@@ -102,7 +102,7 @@ Access `React.Fragment` and other React features through the component tag funct
     [:MyFragment]]))
 ```
 
-## Props
+### Props
 
 The second item in the vector (the props) must be a Javascript object or nil. By default, it is passed untransformed to `React.createElement`. Keep in mind that React only understands Javascript objects for props.
 
@@ -128,7 +128,7 @@ Henge does not transform prop keys. React expects **camelCase** keys. Do not use
 (h/compile [:button #js {:on-click #(handle %)}]) ; Bad
 ```
 
-## Children
+### Children
 
 The remaining items in the vector are treated as the element's children.
 
@@ -157,7 +157,7 @@ All other forms are left as they are.
     (js/React.createElement "li" #js {:key i} i))
 ```
 
-# Extending
+## Extending
 
 Henge is designed to be extendable. Serveral key transformation functions and values are dynamic and bindable. Write your own macro and rebind these vars.
 
@@ -175,7 +175,7 @@ Henge is designed to be extendable. Serveral key transformation functions and va
 
 Read the source to find out whats is dynamically bindable.
 
-# Tanuki Extension
+## Tanuki Extension
 
 Henge comes with an extended api called *tanuki* designed to make handling React props easier.
 
@@ -185,7 +185,7 @@ Require tanuki's `compile` macro from its namespace.
 (require-macros '[com.onionpancakes.henge.api.tanuki :as t])
 ```
 
-## Keywords as props
+### Keywords as props
 
 Use keywords as css selector style props. Keywords are parsed into tokens. Tokens beginning with `#` are treated as ids. Tokens beginning with `.` are treated as classes. Tokens are processed into id and classes at **compile** time.
 
@@ -198,7 +198,7 @@ Use keywords as css selector style props. Keywords are parsed into tokens. Token
                                    :className "foo bar"})
 ```
 
-## Maps as props
+### Maps as props
 
 Tanuki treats Clojure maps as a special extension of js object props. Namespaced keys are used as entrypoints for special behavior. Global, non-namespaced keys are treated as ordinary props with their values passed through untouched.
 
@@ -215,7 +215,7 @@ Note that for global keys, sub-maps are not handled differently. Send js objects
 (t/compile [:div {:style {:color "blue"}}])     ; Bad
 ```
 
-### `::t/classes` - Specify `className` with a collection
+#### `::t/classes` - Specify `className` with a collection
 
 Use `::t/classes` to specify the element's classes with a collection. The value of `::t/classes` can be one of the following:
 
@@ -239,7 +239,7 @@ The value of `::t/classes` is compiled into an expression which will process and
 
 Currently, only `::t/classes` has special processing.
 
-# Rules of Transformation
+## Rules of Transformation
 
 Henge recursively transforms all keywords vectors into `React.createElement` calls except for the following situations:
 
@@ -259,6 +259,6 @@ Henge recursively transforms all keywords vectors into `React.createElement` cal
      (get m ^::h/skip [:foo :bar])])) ; The argument not transformed!
 ```
 
-# LICENSE
+## LICENSE
 
 MIT
