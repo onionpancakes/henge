@@ -289,7 +289,7 @@ If Henge is transforming a vector that should not be transformed, use adorn it w
 
 ```clojure
 (let [data [:not :an :element]]
-  (t/compile
+  (h/compile
     [:div nil
       (for [d data]
         [:p nil (name d)])])])
