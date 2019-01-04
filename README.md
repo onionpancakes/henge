@@ -7,13 +7,12 @@ Henge is ClojureScript's version of JSX. It follows a few guiding principles whi
 * Aggressively transform vectors into `React.createElement` calls at compile time.
 * No runtime vector interpretation.
 * Support the templating of `React.createElement` as transparently as possible with JSX semantics.
-  * No (pointless) mapping between camelCase and hypen-case props keys. Use camelCase just like normal React.
+  * No mapping between camelCase and hypen-case props keys. Use camelCase just like normal React.
   * Support user defined components with a consistent syntax.
   * Support React features (e.g. `React.Fragment`, contexts, etc...) with as little library maintenance as possible.
 * Extendable core api with good defaults.
-* Explore the bleeding edge of Clojure.
 
-## Install
+### Install
 
 Add Henge's git coordinate to your `deps.edn`.
 
@@ -26,6 +25,27 @@ Additional requirements:
 
 * Clojure 1.10.0 or later.
 * `React` is in scope.
+* `yarn` to run tests.
+
+### Running the Tests
+
+To run Henge's clojure tests:
+
+```
+$ clj -A:test:run-tests
+```
+
+To run Henge's JavaScript tests, first build the test components into a JavaScript module:
+
+```
+$ clj -A:build-testjs
+```
+
+Then run tests from yarn:
+```
+$ yarn       # make sure to have npm deps
+$ yarn test
+```
 
 ## Usage
 
@@ -173,9 +193,14 @@ Henge is designed to be extendable. Serveral key transformation functions and va
 (my-func "div" nil "foo")
 ```
 
-Read the source to find out whats is dynamically bindable.
+The following vars are dynamic:
 
-## Tanuki Extension
+* `create-element-fn`: The function symbol for creating an element. Defaults to `js/React.createElement`.
+* `transform-tag`: The function for transforming the tag into a type for `js/React.createElement`. Defaults to `h/tag->type`.
+* `transform-props`: The function for transforming the element's props. Defaults to `identity`.
+* `transform-element`: The function for transforming a conformed element vector into a conformed create-element call. The default function will invoke the three dynamic vars above to assemble a create-element call.
+
+## The *Tanuki* Extension
 
 Henge comes with an extended api called *tanuki* designed to make handling React props easier.
 
@@ -203,7 +228,7 @@ Use keywords as css selector style props. Keywords are parsed into tokens. Token
 Tanuki treats Clojure maps as a special extension of js object props. Namespaced keys are used as entrypoints for special behavior. Global, non-namespaced keys are treated as ordinary props with their values passed through untouched.
 
 ```clojure
-(t/compile [:div {:id "app"}]) ; OK
+(t/compile [:div {:id "app"}]) ; OK with t/compile
 ```
 
 Note that for global keys, sub-maps are not handled differently. Send js objects to properties that expects them.
@@ -257,6 +282,16 @@ Henge recursively transforms all keywords vectors into `React.createElement` cal
           [:p nil "foobar"]}]         ; Map value is tranformed!
    [:div nil
      (get m ^::h/skip [:foo :bar])])) ; The argument not transformed!
+```
+
+If Henge is transforming a vector that should not be transformed, use adorn it with `::h/skip` metadata or process the vector outside of `compile`.
+
+```clojure
+(let [data [:not :an :element]]
+  (t/compile
+    [:div nil
+      (for [d data]
+        [:p nil (name d)])])])
 ```
 
 ## LICENSE
