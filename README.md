@@ -1,3 +1,7 @@
+# Deprecation Notice
+
+Henge has been succeeded by [Veil](https://github.com/onionpancakes/veil).
+
 # Henge
 
 ClojureScript library for transforming vectors into `React.createElement` calls.
